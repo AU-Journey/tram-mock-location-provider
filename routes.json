@@ -1,13 +1,13 @@
 {
   "points": {
-    "saint_michael_outbound": { "lat": 13.612214, "lon": 100.836749, "image": 1 },
-    "east_junction_outbound": { "lat": 13.613169, "lon": 100.833421, "image": 2 },
+    "saint_michael_inbound": { "lat": 13.612214, "lon": 100.836749, "image": 1 },
+    "east_junction_inbound": { "lat": 13.613169, "lon": 100.833421, "image": 2 },
     "residence_southeast": { "lat": 13.612704, "lon": 100.833101, "image": 3 },
     "residence_southwest": { "lat": 13.613142, "lon": 100.831213, "image": 4 },
     "residence_northwest": { "lat": 13.614445, "lon": 100.831602, "image": 5 },
     "residence_northeast": { "lat": 13.613945, "lon": 100.833587, "image": 6 },
-    "east_junction_inbound": { "lat": 13.613277, "lon": 100.833455, "image": 7 },
-    "saint_michael_inbound": { "lat": 13.612360, "lon": 100.836767, "image": 8 },
+    "east_junction_outbound": { "lat": 13.613277, "lon": 100.833455, "image": 7 },
+    "saint_michael_outbound": { "lat": 13.612360, "lon": 100.836767, "image": 8 },
     "aquatic_north_turn": { "lat": 13.615126, "lon": 100.833990, "image": 9 }
   },
   "routes": {
