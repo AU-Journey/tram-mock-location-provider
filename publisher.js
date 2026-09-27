@@ -1,7 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { io } from 'socket.io-client';
 
-const routes = JSON.parse(readFileSync(new URL('./routes.json', import.meta.url), 'utf8'));
+const routeData = JSON.parse(readFileSync(new URL('./routes.json', import.meta.url), 'utf8'));
+const routes = Object.fromEntries(
+  Object.entries(routeData.routes).map(([tramId, pointIds]) => [
+    tramId,
+    pointIds.map((pointId) => {
+      const point = routeData.points[pointId];
+      if (!point) throw new Error(`Unknown route point: ${pointId}`);
+      return point;
+    })
+  ])
+);
 const intervalMs = Math.max(250, Number(process.env.MOCK_INTERVAL_MS || 500));
 const speedMetersPerSecond = Math.max(1, Number(process.env.MOCK_SPEED_MPS || 10));
 const stepMeters = speedMetersPerSecond * intervalMs / 1000;
