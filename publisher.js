@@ -14,6 +14,7 @@ const routes = Object.fromEntries(
 );
 const intervalMs = Math.max(250, Number(process.env.MOCK_INTERVAL_MS || 500));
 const speedMetersPerSecond = Math.max(1, Number(process.env.MOCK_SPEED_MPS || 10));
+const tram2StartDelayMs = Math.max(0, Number(process.env.MOCK_TRAM_2_START_DELAY_MS || 4000));
 const stepMeters = speedMetersPerSecond * intervalMs / 1000;
 const backendUrl = process.env.BACKEND_URL || 'http://backend:8080';
 const socket = io(backendUrl, { transports: ['websocket'] });
@@ -60,12 +61,16 @@ const positions = Object.fromEntries(
   Object.entries(routes).map(([tramId, waypoints]) => [tramId, resampleRoute(waypoints)])
 );
 const indices = Object.fromEntries(Object.keys(positions).map((tramId) => [tramId, 0]));
+const startedTrams = new Set();
+let firstConnectedAt;
 let publishInterval;
 
 function publishPositions() {
   const now = Date.now();
 
   for (const [tramId, route] of Object.entries(positions)) {
+    if (tramId === 'tram_2' && now - firstConnectedAt < tram2StartDelayMs) continue;
+
     const index = indices[tramId];
     const current = route[index];
     const previous = route[(index - 1 + route.length) % route.length];
@@ -79,11 +84,17 @@ function publishPositions() {
       }
     });
 
+    if (!startedTrams.has(tramId)) {
+      console.log(`${tramId} started`);
+      startedTrams.add(tramId);
+    }
+
     indices[tramId] = (index + 1) % route.length;
   }
 }
 
 socket.on('connect', () => {
+  if (firstConnectedAt === undefined) firstConnectedAt = Date.now();
   console.log(`Mock location publisher connected to ${backendUrl}`);
   clearInterval(publishInterval);
   publishPositions();
